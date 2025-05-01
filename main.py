@@ -2,9 +2,12 @@ import customtkinter as ctk
 import sympy as sp
 import matplotlib
 import re
+import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from matplotlib.patches import Polygon
 from sympy.parsing.latex import parse_latex
+from sympy import symbols, sympify
 
 
 matplotlib.use("TkAgg")
@@ -39,8 +42,10 @@ class SelectOperation(ctk.CTkFrame):
         self.pack(fill="x", padx=20, pady=10)
         self.sub_frame = None
         self.operation = None
+        self.upper_entry = None
+        self.lower_entry = None
         self.app = app
-
+        
         options_frame = ctk.CTkFrame(self, fg_color="transparent")
         options_frame.pack(fill="x")
 
@@ -94,6 +99,12 @@ class SelectOperation(ctk.CTkFrame):
             self.sub_frame, "Differentiate how many times?", "Default value is 1"
         )
 
+    def return_options(self):
+        return self.var_entry, self.times_entry
+    
+    def return_integral_options(self):
+        return self.upper_entry, self.lower_entry
+
     def calculate(self):
         try:
             function_text = self.app.function_entry.get_value()
@@ -124,6 +135,7 @@ class SelectOperation(ctk.CTkFrame):
                     latex_result = sp.latex(result) + " + C"
 
             self.app.display_result(latex_result)
+            self.app.result_plot_display.graph_equation()
 
         except Exception as e:
             print(f"Error: {str(e)}")
@@ -134,7 +146,7 @@ class ResultDisplay(ctk.CTkFrame):
         super().__init__(parent)
         self.pack(fill="both", expand=True, padx=20, pady=10)
 
-        fig = matplotlib.figure.Figure(figsize=(5, 2), dpi=100)
+        fig = matplotlib.figure.Figure(figsize=(5, 1), dpi=100)
         self.wx = fig.add_subplot(111)
 
         self.canvas = FigureCanvasTkAgg(fig, master=self)
@@ -151,12 +163,10 @@ class ResultDisplay(ctk.CTkFrame):
         self.wx.spines["left"].set_visible(False)
         self.wx.get_xaxis().set_visible(False)
         self.wx.get_yaxis().set_visible(False)
-        self.wx.set_facecolor("#2b2b2b")
+        self.wx.set_facecolor("#1f1f1f")
 
         plt.rcParams["text.color"] = "white"
-
-        self.display_result("Result \ will \ appear \ here")
-
+        
     def display_result(self, result_text):
         formula = "$" + result_text + "$"
         self.wx.clear()
@@ -169,7 +179,7 @@ class ResultDisplay(ctk.CTkFrame):
 class ShowEquation(ctk.CTkFrame):
     def __init__(self, parent, entry_widget):
         super().__init__(parent)
-        self.pack(fill="both", expand=True, padx=20, pady=10)
+        self.pack(fill="both", expand=True, padx=10, pady=20)
 
         self.entry_widget = entry_widget
         self.entry_widget.main_entry.bind("<KeyRelease>", self.update_equation)
@@ -190,7 +200,7 @@ class ShowEquation(ctk.CTkFrame):
         self.wx.spines["left"].set_visible(False)
         self.wx.get_xaxis().set_visible(False)
         self.wx.get_yaxis().set_visible(False)
-        self.wx.set_facecolor("#2b2b2b")
+        self.wx.set_facecolor("#1f1f1f")
 
         plt.rcParams["text.color"] = "white"
 
@@ -208,6 +218,70 @@ class ShowEquation(ctk.CTkFrame):
         self.canvas.draw()
 
 
+class ShowGraph(ctk.CTkFrame):
+    def __init__(self, parent, entry_widget, select_operation):
+        super().__init__(parent)
+        
+        self.select_operation = select_operation
+        self.entry_widget = entry_widget
+        self.entry_widget.main_entry.bind("<KeyRelease>", self.graph_equation)
+
+        fig = matplotlib.figure.Figure(figsize=(5, 4), dpi=100)
+        self.wx = fig.add_subplot(111)
+
+        self.canvas = FigureCanvasTkAgg(fig, master=self)
+        self.canvas.get_tk_widget().pack(fill="both", expand=True)
+
+        fig.patch.set_facecolor("#2b2b2b")
+        fig.subplots_adjust(left=0.1, right=0.9, top=0.9, bottom=0.1)
+
+        # Configure plot appearance
+        self.wx.set_facecolor("#1f1f1f")
+        self.wx.spines["top"].set_visible(False)
+        self.wx.spines["right"].set_visible(False)
+        self.wx.spines["bottom"].set_color("white")
+        self.wx.spines["left"].set_color("white")
+        self.wx.tick_params(axis="x", colors="white")
+        self.wx.tick_params(axis="y", colors="white")
+        plt.rcParams["text.color"] = "white"
+
+    def graph_equation(self, event=None):
+        print("graph equation called")
+        try:
+            function_text = self.entry_widget.get_value()
+            if not function_text:
+                return
+
+            function_text = parse_latex(function_text)
+            expr = sp.sympify(function_text)
+            var_name = self.select_operation.var_entry.get_value() or "x"
+            var = sp.symbols(var_name)
+
+            x_vals = np.linspace(-10, 10, 500)
+            y_vals = [float(expr.subs(var, x_val)) for x_val in x_vals]
+
+            self.wx.clear()
+            self.wx.plot(x_vals, y_vals, label="f(x)", color="red", linewidth=2)
+
+            if self.select_operation.operation == "Integral":
+                lower = self.select_operation.lower_entry.get_value()
+                upper = self.select_operation.upper_entry.get_value()
+                if lower and upper:
+                    lower = -sp.oo if lower == "-inf" else float(sp.sympify(lower))
+                    upper = sp.oo if upper in ("inf", "+inf") else float(sp.sympify(upper))
+
+                    x_fill = np.linspace(lower, upper, 500)
+                    y_fill = [float(expr.subs(var, x_val)) for x_val in x_fill]
+                    self.wx.fill_between(x_fill, y_fill, color="blue", alpha=0.3, label="Integral Area")
+
+            self.wx.legend(loc="upper left", fontsize=10, facecolor="#2b2b2b", edgecolor="white")
+            self.wx.set_xlabel(var_name, color="white")
+            self.wx.set_ylabel("f(x)", color="white")
+            self.canvas.draw()
+
+        except Exception as e:
+            print(f"Error in graphing: {e}")
+   
 # Main application class
 class App(ctk.CTk):
     def __init__(self):
@@ -247,32 +321,41 @@ class App(ctk.CTk):
             self.left_frame,
             text="Select Operation",
             font=("Arial", 20, "bold"),
-        ).pack(pady=(20, 5))
+        ).pack(pady=(30, 10))
 
         self.operation_selector = SelectOperation(self.left_frame, self)
-
-        # Right frame content
+        
         ctk.CTkLabel(
-            self.right_frame,
+            self.left_frame,
             text="Equation Preview",
             font=("Arial", 20, "bold"),
-        ).pack(pady=10)
+        ).pack(pady=(20, 10))
 
-        self.equation_display = ShowEquation(self.right_frame, self.function_entry)
+        self.equation_display = ShowEquation(self.left_frame, self.function_entry)
 
+        # Right frame content
         ctk.CTkLabel(
             self.right_frame,
             text="Result",
             font=("Arial", 20, "bold"),
         ).pack(pady=(20, 5))
 
-        self.result_display = ResultDisplay(self.right_frame)
+        self.result_equation_display = ResultDisplay(self.right_frame)
+        
+        ctk.CTkLabel(
+            self.right_frame,
+            text="Graph",
+            font=("Arial", 20, "bold"),
+        ).pack(pady=(20, 5))
+        
+        self.result_plot_display = ShowGraph(self.right_frame, self.function_entry, self.operation_selector)
 
     def update_equation(self):
         self.equation_display.update_equation(None)
 
     def display_result(self, result):
-        self.result_display.display_result(result)
+        self.result_equation_display.display_result(result)
+        self.result_plot_display.graph_equation()
 
 
 if __name__ == "__main__":
