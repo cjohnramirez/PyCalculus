@@ -221,7 +221,8 @@ class ShowEquation(ctk.CTkFrame):
 class ShowGraph(ctk.CTkFrame):
     def __init__(self, parent, entry_widget, select_operation):
         super().__init__(parent)
-        
+        self.pack(fill="both", expand=True, padx=10, pady=20) 
+
         self.select_operation = select_operation
         self.entry_widget = entry_widget
         self.entry_widget.main_entry.bind("<KeyRelease>", self.graph_equation)
@@ -245,9 +246,11 @@ class ShowGraph(ctk.CTkFrame):
         self.wx.tick_params(axis="y", colors="white")
         plt.rcParams["text.color"] = "white"
 
-    def graph_equation(self, event=None):
-        print("graph equation called")
+    def graph_equation(self):
+        print("Graph equation triggered")
+
         try:
+            self.wx.clear()
             function_text = self.entry_widget.get_value()
             if not function_text:
                 return
@@ -257,12 +260,19 @@ class ShowGraph(ctk.CTkFrame):
             var_name = self.select_operation.var_entry.get_value() or "x"
             var = sp.symbols(var_name)
 
+            # Define x and y ranges
             x_vals = np.linspace(-10, 10, 500)
             y_vals = [float(expr.subs(var, x_val)) for x_val in x_vals]
 
+            # Ensure the plot is reset
             self.wx.clear()
+            self.wx.set_xlim(-10, 10)
+            self.wx.set_ylim(min(y_vals) - 1, max(y_vals) + 1)
+
+            # Plot the function
             self.wx.plot(x_vals, y_vals, label="f(x)", color="red", linewidth=2)
 
+            # Optional: Fill the area for integrals
             if self.select_operation.operation == "Integral":
                 lower = self.select_operation.lower_entry.get_value()
                 upper = self.select_operation.upper_entry.get_value()
@@ -274,14 +284,18 @@ class ShowGraph(ctk.CTkFrame):
                     y_fill = [float(expr.subs(var, x_val)) for x_val in x_fill]
                     self.wx.fill_between(x_fill, y_fill, color="blue", alpha=0.3, label="Integral Area")
 
-            self.wx.legend(loc="upper left", fontsize=10, facecolor="#2b2b2b", edgecolor="white")
+            # Re-draw the canvas and set axis labels
             self.wx.set_xlabel(var_name, color="white")
             self.wx.set_ylabel("f(x)", color="white")
+            self.wx.legend(loc="upper left", fontsize=10, facecolor="#2b2b2b", edgecolor="white")
+
             self.canvas.draw()
 
         except Exception as e:
             print(f"Error in graphing: {e}")
-   
+
+
+    
 # Main application class
 class App(ctk.CTk):
     def __init__(self):
