@@ -252,6 +252,7 @@ class ShowGraph(ctk.CTkFrame):
         try:
             self.wx.clear()
             function_text = self.entry_widget.get_value()
+            
             if not function_text:
                 return
 
@@ -267,10 +268,19 @@ class ShowGraph(ctk.CTkFrame):
             # Ensure the plot is reset
             self.wx.clear()
             self.wx.set_xlim(-10, 10)
-            self.wx.set_ylim(min(y_vals) - 1, max(y_vals) + 1)
+            
+            self.wx.set_ylim(min(y_vals) - 100, max(y_vals) + 100)
+            self.wx.axhline(0, color="white", linewidth=0.8)  # Add horizontal line at y=0
+            self.wx.axvline(0, color="white", linewidth=0.8)  # Add vertical line at x=0
 
             # Plot the function
             self.wx.plot(x_vals, y_vals, label="f(x)", color="red", linewidth=2)
+            
+            if self.select_operation.operation == "Derivative":
+                times = self.select_operation.times_entry.get_value() or "1"
+                derivative = sp.diff(expr, var, int(times))
+                derivative_vals = [float(derivative.subs(var, x_val)) for x_val in x_vals]
+                self.wx.plot(x_vals, derivative_vals, label=f"f{'`' * int(times)}(x)", color="blue", linewidth=2)
 
             # Optional: Fill the area for integrals
             if self.select_operation.operation == "Integral":
