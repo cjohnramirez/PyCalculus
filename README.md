@@ -23,7 +23,7 @@
 ## 🚀 Installation
 
 ```bash
-git clone https://github.com/yourusername/pycalculus.git
+git clone https://github.com/cjohnramirez/PyCalculus.git
 cd pycalculus
 pip install -r requirements.txt
 python main.py
