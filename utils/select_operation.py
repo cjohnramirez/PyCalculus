@@ -3,6 +3,7 @@ from components.custom_entry import Entry
 import customtkinter as ctk
 import sympy as sp
 from sympy.parsing.latex import parse_latex
+from sympy import N
 
 class SelectOperation(ctk.CTkFrame):
     def __init__(self, parent, app):
@@ -33,7 +34,7 @@ class SelectOperation(ctk.CTkFrame):
 
     def options_save(self, choice):
         if self.sub_frame:
-            self.sub_frame.quit()
+            self.sub_frame.destroy()
 
         self.operation = choice
 
@@ -97,6 +98,7 @@ class SelectOperation(ctk.CTkFrame):
                     lower = -sp.oo if lower == "-inf" else sp.sympify(lower)
                     upper = sp.oo if upper in ("inf", "+inf") else sp.sympify(upper)
                     result = sp.integrate(expr, (var, lower, upper))
+                    result = N(result)
                     latex_result = sp.latex(result)
                 else:
                     result = sp.integrate(expr, var)

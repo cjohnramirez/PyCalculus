@@ -36,6 +36,7 @@ class ShowEquation(ctk.CTkFrame):
 
     def update_equation(self, text):
         text = self.entry_widget.get_value()
+        
         if text:
             formula = "$" + text + "$"
         else:

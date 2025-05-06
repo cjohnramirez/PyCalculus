@@ -24,7 +24,8 @@ class ShowGraph(ctk.CTkFrame):
         self.canvas.get_tk_widget().pack(fill="both", expand=True)
 
         fig.patch.set_facecolor("#2b2b2b")
-        fig = plt.subplots(figsize=(6, 4))
+        fig, ax = plt.subplots(figsize=(6, 4))
+        fig.tight_layout()
 
         # Configure plot appearance
         self.wx.set_facecolor("#1f1f1f")
@@ -57,7 +58,7 @@ class ShowGraph(ctk.CTkFrame):
             self.wx.clear()
             self.wx.set_xlim(-10, 10)
 
-            self.wx.set_ylim(min(y_vals) - 100, max(y_vals) + 100)
+            self.wx.set_ylim(min(y_vals) - 10, max(y_vals) + 10)
             self.wx.axhline(
                 0, color="white", linewidth=0.8
             )  # Add horizontal line at y=0
@@ -90,13 +91,23 @@ class ShowGraph(ctk.CTkFrame):
                         sp.oo if upper in ("inf", "+inf") else float(sp.sympify(upper))
                     )
 
-                    x_fill = np.linspace(lower, upper, 500)
-                    y_fill = [float(expr.subs(var, x_val)) for x_val in x_fill]
-                    self.wx.fill_between(
-                        x_fill, y_fill, color="blue", alpha=0.3, label="Integral Area"
-                    )
-                    self.wx.relim()
-                    self.wx.autoscale_view()
+                    x = np.linspace(lower, upper, 500)
+                    y = np.array([float(expr.subs(var, val)) for val in x])
+
+                    x_margin = 0.05 * (upper - lower)
+                    x_fill = x[(x > lower + x_margin) & (x < upper - x_margin)]
+                    y_fill = np.array([float(expr.subs(var, val)) for val in x_fill])
+
+                    self.wx.cla()
+                    self.wx.plot(x, y, color='red', linewidth=2, label="f(x)")
+                    self.wx.fill_between(x_fill, y_fill, color='blue', alpha=0.5, label="Integral Area")
+                    
+                    self.wx.set_xlim(lower, upper)
+                    self.wx.set_ylim(np.min(y), np.max(y))
+                    self.wx.axhline(0, color='white', linewidth=1)
+                    self.wx.axvline(0, color='white', linewidth=1)
+                    self.wx.margins(0)
+
 
             # Re-draw the canvas and set axis labels
             self.wx.set_xlabel(var_name, color="white")
