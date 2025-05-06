@@ -33,7 +33,7 @@ class SelectOperation(ctk.CTkFrame):
 
     def options_save(self, choice):
         if self.sub_frame:
-            self.sub_frame.destroy()
+            self.sub_frame.quit()
 
         self.operation = choice
 

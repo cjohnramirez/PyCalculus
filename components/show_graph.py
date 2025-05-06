@@ -16,7 +16,6 @@ class ShowGraph(ctk.CTkFrame):
 
         self.select_operation = select_operation
         self.entry_widget = entry_widget
-        self.entry_widget.main_entry.bind("<KeyRelease>", self.graph_equation)
 
         fig = matplotlib.figure.Figure(figsize=(5, 4), dpi=100)
         self.wx = fig.add_subplot(111)
@@ -25,7 +24,7 @@ class ShowGraph(ctk.CTkFrame):
         self.canvas.get_tk_widget().pack(fill="both", expand=True)
 
         fig.patch.set_facecolor("#2b2b2b")
-        fig.subplots_adjust(left=0.1, right=0.9, top=0.9, bottom=0.1)
+        fig = plt.subplots(figsize=(6, 4))
 
         # Configure plot appearance
         self.wx.set_facecolor("#1f1f1f")
@@ -38,8 +37,6 @@ class ShowGraph(ctk.CTkFrame):
         plt.rcParams["text.color"] = "white"
 
     def graph_equation(self):
-        print("Graph equation triggered")
-
         try:
             self.wx.clear()
             function_text = self.entry_widget.get_value()
@@ -98,6 +95,8 @@ class ShowGraph(ctk.CTkFrame):
                     self.wx.fill_between(
                         x_fill, y_fill, color="blue", alpha=0.3, label="Integral Area"
                     )
+                    self.wx.relim()
+                    self.wx.autoscale_view()
 
             # Re-draw the canvas and set axis labels
             self.wx.set_xlabel(var_name, color="white")

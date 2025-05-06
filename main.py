@@ -5,7 +5,8 @@ from components.custom_entry import Entry
 from utils.select_operation import SelectOperation
 
 import customtkinter as ctk
-import matplotlib
+import tkinter as tk
+import tkinter.messagebox
 
 # Main application class
 class App(ctk.CTk):
@@ -79,10 +80,14 @@ class App(ctk.CTk):
         self.equation_display.update_equation(None)
 
     def display_result(self, result):
-        self.result_equation_display.display_result(result)
         self.result_plot_display.graph_equation()
+        self.result_equation_display.display_result(result)
 
+def on_closing():
+    app.withdraw()
+    app.quit()
 
 if __name__ == "__main__":
     app = App()
+    app.protocol("WM_DELETE_WINDOW", on_closing)
     app.mainloop()
