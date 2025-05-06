@@ -43,9 +43,9 @@ python main.py
    * `∫ x^2 dx` → plots area under curve, provides indefinite integral
    * `∫₀¹ x^2 dx` → computes and displays definite integral result and shaded region on graph
 * Visualize:
-   * Tangent slope at specific points
-   * Instantaneous rate of change
-   * Accumulated area with adjustable bounds
+   * Area under the curve
+   * Multiple derivatives
+   * Infinite integrals
 
 ## 📸 Screenshots 
 ![PyCalculus](image.png)
