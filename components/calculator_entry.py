@@ -1,16 +1,12 @@
 import customtkinter as ctk
 
-class Entry(ctk.CTkFrame):
-    def __init__(self, parent, labelText="", placeholder=""):
+class CalcEntry(ctk.CTkFrame):
+    def __init__(self, parent):
         super().__init__(parent, fg_color="transparent")
         self.pack(fill="x")
 
-        label = ctk.CTkLabel(
-            self, text=labelText, anchor="w", justify="left", bg_color=self["bg"]
-        )
-        label.pack(anchor="w")
         self.main_entry = ctk.CTkEntry(
-            self, placeholder_text=placeholder, bg_color=self["bg"]
+            self, bg_color=self["bg"], height=40, font=("Arial", 12), text_color="white"
         )
 
         self.main_entry.pack(fill="x")

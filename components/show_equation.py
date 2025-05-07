@@ -9,7 +9,7 @@ matplotlib.use("TkAgg")
 class ShowEquation(ctk.CTkFrame):
     def __init__(self, parent, entry_widget):
         super().__init__(parent)
-        self.pack(fill="both", expand=True, padx=10, pady=20)
+        self.pack(fill="x", pady=20)
 
         self.entry_widget = entry_widget
         self.entry_widget.main_entry.bind("<KeyRelease>", self.update_equation)
@@ -18,10 +18,9 @@ class ShowEquation(ctk.CTkFrame):
         self.wx = fig.add_subplot(111)
 
         self.canvas = FigureCanvasTkAgg(fig, master=self)
-        self.canvas.get_tk_widget().pack(fill="both", expand=True)
+        self.canvas.get_tk_widget().pack(fill="x")
 
         fig.patch.set_facecolor("#2b2b2b")
-        fig.subplots_adjust(left=0.05, right=0.95, top=0.95, bottom=0.05)
 
         # remove border
         self.wx.spines["top"].set_visible(False)
@@ -30,17 +29,17 @@ class ShowEquation(ctk.CTkFrame):
         self.wx.spines["left"].set_visible(False)
         self.wx.get_xaxis().set_visible(False)
         self.wx.get_yaxis().set_visible(False)
-        self.wx.set_facecolor("#1f1f1f")
+        self.wx.set_facecolor("#2b2b2b")
 
         plt.rcParams["text.color"] = "white"
 
-    def update_equation(self, text):
+    def update_equation(self):
         text = self.entry_widget.get_value()
         
         if text:
             formula = "$" + text + "$"
         else:
-            formula = "$f(x)$"
+            formula = "$Equation \ shows \ here$"
 
         self.wx.clear()
         self.wx.text(

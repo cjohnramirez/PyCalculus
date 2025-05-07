@@ -8,7 +8,7 @@ from sympy import N
 class SelectOperation(ctk.CTkFrame):
     def __init__(self, parent, app):
         super().__init__(parent, fg_color="transparent")
-        self.pack(fill="x", padx=20, pady=10)
+        self.pack(fill="x", padx=20)
         self.sub_frame = None
         self.operation = None
         self.upper_entry = None
@@ -25,12 +25,12 @@ class SelectOperation(ctk.CTkFrame):
             command=self.options_save,
             variable=self.options_var,
         )
-        self.operation_combo.pack(side="left", padx=4, pady=4, fill="x", expand=True)
+        self.operation_combo.pack(side="left", fill="x", expand=True, pady=(0, 20))
 
         self.calculate_button = ctk.CTkButton(
             options_frame, text="Calculate", command=self.calculate
         )
-        self.calculate_button.pack(side="right", padx=4, pady=4)
+        self.calculate_button.pack(side="right", padx=(10, 0), pady=(0, 20))
 
     def options_save(self, choice):
         if self.sub_frame:
@@ -45,28 +45,33 @@ class SelectOperation(ctk.CTkFrame):
 
     def integral_options(self):
         self.sub_frame = ctk.CTkFrame(self, fg_color="transparent")
-        self.sub_frame.pack(fill="x", pady=5)
+        self.sub_frame.pack(fill="both")
 
         self.var_entry = Entry(
             self.sub_frame, "Variable of integration", "Default value is x"
         )
+        self.var_entry.pack(fill="both", side="left", padx=(0, 10), expand=True)
         self.upper_entry = Entry(
-            self.sub_frame, "Upper bound (to)", "If bound is +inf, leave it blank"
+            self.sub_frame, "Upper bound (to)", "Default is +inf"
         )
+        self.upper_entry.pack(fill="x", side="left", padx=(0, 10), expand=True)
         self.lower_entry = Entry(
-            self.sub_frame, "Lower bound (to)", "If bound is -inf, leave it blank"
+            self.sub_frame, "Lower bound (to)", "Default is -inf"
         )
+        self.lower_entry.pack(fill="both", side="left", expand=True)
 
     def derivative_options(self):
         self.sub_frame = ctk.CTkFrame(self, fg_color="transparent")
-        self.sub_frame.pack(fill="x", pady=5)
+        self.sub_frame.pack(fill="both")
 
         self.var_entry = Entry(
             self.sub_frame, "Differentiation variable", "Default value is x"
         )
+        self.var_entry.pack(fill="x", side="left", padx=(0, 10))
         self.times_entry = Entry(
             self.sub_frame, "Differentiate how many times?", "Default value is 1"
         )
+        self.times_entry.pack(fill="x", side="left")
 
     def return_options(self):
         return self.var_entry, self.times_entry

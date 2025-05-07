@@ -1,7 +1,7 @@
 from components.show_graph import ShowGraph
 from components.show_equation import ShowEquation
 from components.result_display import ResultDisplay
-from components.custom_entry import Entry
+from components.calculator_entry import CalcEntry
 from utils.select_operation import SelectOperation
 
 import customtkinter as ctk
@@ -30,34 +30,13 @@ class App(ctk.CTk):
         self.right_frame = ctk.CTkFrame(self)
         self.right_frame.pack(side="right", fill="both", expand=True, padx=10, pady=10)
 
-        # Left frame content
-        ctk.CTkLabel(
+        self.function_entry = CalcEntry(
             self.left_frame,
-            text="Integral and Derivative Calculator",
-            font=("Arial", 24, "bold"),
-        ).pack(pady=10)
-
-        self.function_entry = Entry(
-            self.left_frame,
-            "Input Function",
-            "Enter a mathematical expression like x^2 + 2*x",
         )
-
-        ctk.CTkLabel(
-            self.left_frame,
-            text="Select Operation",
-            font=("Arial", 20, "bold"),
-        ).pack(pady=(30, 10))
-
-        self.operation_selector = SelectOperation(self.left_frame, self)
-        
-        ctk.CTkLabel(
-            self.left_frame,
-            text="Equation Preview",
-            font=("Arial", 20, "bold"),
-        ).pack(pady=(20, 10))
-
+        self.function_entry.pack(padx=20, pady=(20, 0))
         self.equation_display = ShowEquation(self.left_frame, self.function_entry)
+    
+        self.operation_selector = SelectOperation(self.left_frame, self)
 
         # Right frame content
         ctk.CTkLabel(
