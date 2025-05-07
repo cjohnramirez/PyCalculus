@@ -35,7 +35,7 @@ class App(ctk.CTk):
         )
         self.function_entry.pack(padx=20, pady=(20, 0))
         self.equation_display = ShowEquation(self.left_frame, self.function_entry)
-    
+
         self.operation_selector = SelectOperation(self.left_frame, self)
 
         # Right frame content
@@ -54,6 +54,7 @@ class App(ctk.CTk):
         ).pack(pady=(20, 5))
         
         self.result_plot_display = ShowGraph(self.right_frame, self.function_entry, self.operation_selector)
+        self.equation_display.update_equation("$Equation \ shows \ here$")
 
     def update_equation(self):
         self.equation_display.update_equation(None)

@@ -6,7 +6,7 @@ class CalcEntry(ctk.CTkFrame):
         self.pack(fill="x")
 
         self.main_entry = ctk.CTkEntry(
-            self, bg_color=self["bg"], height=40, font=("Arial", 12), text_color="white"
+            self, bg_color=self["bg"], height=40, font=("Roboto", 12), text_color="white", placeholder_text="Enter your equation here"
         )
 
         self.main_entry.pack(fill="x")

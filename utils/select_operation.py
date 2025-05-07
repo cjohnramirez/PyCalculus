@@ -67,11 +67,11 @@ class SelectOperation(ctk.CTkFrame):
         self.var_entry = Entry(
             self.sub_frame, "Differentiation variable", "Default value is x"
         )
-        self.var_entry.pack(fill="x", side="left", padx=(0, 10))
+        self.var_entry.pack(fill="x", side="left", padx=(0, 10), expand=True)
         self.times_entry = Entry(
             self.sub_frame, "Differentiate how many times?", "Default value is 1"
         )
-        self.times_entry.pack(fill="x", side="left")
+        self.times_entry.pack(fill="x", side="left", expand=True)
 
     def return_options(self):
         return self.var_entry, self.times_entry

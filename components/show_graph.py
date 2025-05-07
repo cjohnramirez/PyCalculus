@@ -12,7 +12,7 @@ matplotlib.use("TkAgg")
 class ShowGraph(ctk.CTkFrame):
     def __init__(self, parent, entry_widget, select_operation):
         super().__init__(parent)
-        self.pack(fill="both", expand=True, padx=10, pady=20)
+        self.pack(fill="both", expand=True, pady=(0, 20))
 
         self.select_operation = select_operation
         self.entry_widget = entry_widget

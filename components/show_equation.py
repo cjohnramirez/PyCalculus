@@ -8,9 +8,8 @@ matplotlib.use("TkAgg")
 
 class ShowEquation(ctk.CTkFrame):
     def __init__(self, parent, entry_widget):
-        super().__init__(parent)
-        self.pack(fill="x", pady=20)
-
+        super().__init__(parent, border_color="white", border_width=2)
+        self.pack(fill="x", pady=20, padx=20)
         self.entry_widget = entry_widget
         self.entry_widget.main_entry.bind("<KeyRelease>", self.update_equation)
 
@@ -33,9 +32,9 @@ class ShowEquation(ctk.CTkFrame):
 
         plt.rcParams["text.color"] = "white"
 
-    def update_equation(self):
+    def update_equation(self, text):    
         text = self.entry_widget.get_value()
-        
+
         if text:
             formula = "$" + text + "$"
         else:
