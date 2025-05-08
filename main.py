@@ -2,6 +2,7 @@ from components.show_graph import ShowGraph
 from components.show_equation import ShowEquation
 from components.result_display import ResultDisplay
 from components.calculator_entry import CalcEntry
+from components.calculator_buttons import CalcButtons
 from utils.select_operation import SelectOperation
 
 import customtkinter as ctk
@@ -37,7 +38,10 @@ class App(ctk.CTk):
         self.equation_display = ShowEquation(self.left_frame, self.function_entry)
 
         self.operation_selector = SelectOperation(self.left_frame, self)
-
+        
+        self.calculator_buttons = CalcButtons(self.left_frame, self.function_entry)
+        self.calculator_buttons.pack(padx=20)
+        
         # Right frame content
         ctk.CTkLabel(
             self.right_frame,

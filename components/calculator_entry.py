@@ -16,3 +16,14 @@ class CalcEntry(ctk.CTkFrame):
 
     def get_value(self):
         return self.main_entry.get()
+
+    def add_entry(self, value):
+        self.main_entry.insert("end", value)
+        
+    def clear_entry(self):
+        self.main_entry.delete(0, "end")
+        
+    def backspace_entry(self):
+        current_text = self.main_entry.get()
+        if current_text:
+            self.main_entry.delete(len(current_text) - 1, "end")
