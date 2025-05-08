@@ -48,7 +48,7 @@ python main.py
    * Infinite integrals
 
 ## 📸 Screenshots 
-![PyCalculus](image-1.png)
+![Screenshot](image-2.png)
 
 ## 📚 Educational Use
 
