@@ -68,7 +68,7 @@ class CalcButtons(ctk.CTkFrame):
 
         for row_index, row in enumerate(self.calculator_buttons):
             row_frame = ctk.CTkFrame(self, fg_color="transparent")
-            row_frame.pack(fill="x", pady=(0, 10))
+            row_frame.pack(fill="x", pady=(0, 10), expand=True)
 
             for col_index, button in enumerate(row):
                 label, equation = button
@@ -109,7 +109,7 @@ class CalcButtons(ctk.CTkFrame):
                         height=40,
                         font=("Roboto", 12),
                     )
-                btn.pack(side="left", padx=(0, 10), pady=(20, 0))
+                btn.pack(side="left", padx=(0, 10), pady=(20, 0), expand=True)
                 self.button_widgets.append(btn)
 
     def add_to_entry(self, equation):
