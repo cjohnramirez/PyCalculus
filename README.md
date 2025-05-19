@@ -1,4 +1,4 @@
-# PyCalculus 🧮📈
+# PyCalculus 📈
 
 *A Python Scientific and Graphing Calculator for Integrals and Derivatives*
 
